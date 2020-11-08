@@ -7,9 +7,8 @@
 
 #
 # plugin environment:
-# - filename plugin.${PLUGIN_NAME}.sh
 # - use telegram_send.sh as template
-# - replace _usage(), _option() and _validate() calls to telegram versions
+# - define _usage(), _option() and _validate() same as telegram versions
 # - implement _on_not_found() as a call to telegram_send()
 #
 
@@ -23,11 +22,11 @@
 #
 # use interface implementations from telegram_send.sh
 #
-function tg_nf_usage() { telegram_usage; }
-function tg_nf_option() { telegram_option "$@"; }
-function tg_nf_validate() { telegram_validate; }
+tg_nf_usage() { telegram_usage; }
+tg_nf_option() { telegram_option "$@"; }
+tg_nf_validate() { telegram_validate; }
 
 #
 # send Telegram notification when expected string not found on page
 #
-function tg_nf_on_not_found() { telegram_send; }
+tg_nf_on_not_found() { telegram_send; }

@@ -2,6 +2,8 @@
 
 # dependencies: curl, grep, printf
 
+alias printf=/usr/bin/printf
+
 #
 # curl command line and string to look for
 #
@@ -25,7 +27,7 @@ PLUGIN=
 #
 fn_exists()
 {
-    type -t "$1" > /dev/null
+    type "$1" > /dev/null
 }
 
 #
@@ -37,10 +39,10 @@ handle_event()
     time_file=`dirname $NOTIFY_FILE`/`basename $NOTIFY_FILE .time`.$1.time
     if [ $(( `date +%s` - `cat "$time_file" || echo 0` )) -gt $NOTIFY_PERIOD ]; then
         date +%s > "$time_file"
-        date +"[%F %T] $1"
+        date +"[%F %T %Z] $1"
         [ -n "$PLUGIN" ] && fn_exists "${PLUGIN}_on_$1" && ${PLUGIN}_on_$1 "$2"
     else
-        date +"[%F %T] recent $1"
+        date +"[%F %T %Z] recent $1"
         [ -n "$PLUGIN" ] && fn_exists "${PLUGIN}_on_recent" && ${PLUGIN}_on_recent "$2" "$1"
     fi
 }
@@ -117,7 +119,7 @@ while [ $# -gt 0 ]; do
         ;;
     # curl option if unknown
     *)
-        CURL="$CURL $(printf '%q' "$1")"
+        CURL=`printf '%s %q' "$CURL" "$1"`
         shift
         ;;
     esac
@@ -134,7 +136,7 @@ fi
 #
 # poll the page
 #
-response=$($CURL)
+response=`echo "$CURL" | /bin/sh`
 err=$?
 
 if [ -n "$response" ]; then
@@ -145,6 +147,6 @@ if [ -n "$response" ]; then
         handle_event "found" "$response"
     fi
 else
-    date +"[%F %T] error $err"
+    date +"[%F %T %Z] error $err"
 	[ -n "$PLUGIN" ] && fn_exists "${PLUGIN}_on_error" && ${PLUGIN}_on_error $err
 fi
