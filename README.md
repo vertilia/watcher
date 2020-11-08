@@ -18,7 +18,7 @@ When launching without plugin the script may be useful to just maintain the log 
 Which will produce the following output:
 
 ```
-[2020-11-08 13:04:32] found
+[2020-11-08 13:04:32 UTC] found
 ```
 
 Automating the call to be launched every minute via the crontab and redirecting the STDOUT to the logfile you can build the database of your site availability.
